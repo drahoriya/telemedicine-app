@@ -12,6 +12,7 @@ import { createConsultation } from "@/services/consultationService";
 import { updatePatient } from "@/services/patientService";
 import { getDoctor } from "@/services/doctorService";
 import { setUser } from "@/reducers/userReducer";
+import { useToast } from "@/hooks";
 
 import VerifyData from "./VerifyData";
 import DateStep from "./DateStep";
@@ -58,8 +59,10 @@ export default function BookConsultationPage() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userReducer.user);
   const [activeStep, setActiveStep] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
   const params = useParams();
   const router = useRouter();
+  const toast = useToast();
 
   const form = useForm({
     resolver: zodResolver(consultationSchema),
@@ -111,11 +114,20 @@ export default function BookConsultationPage() {
   }, [user, params.id]);
 
   const onSubmit = async (values) => {
-    const { date, patient, doctor: doctorId, ...resValues } = values;
-    await updatePatient({ id: user._id, token: user.token }, resValues);
-    await createConsultation({ date, patient, doctor: doctorId });
-    dispatch(setUser({ ...user, ...resValues }));
-    router.push("/patient/consultations");
+    setSubmitting(true);
+    try {
+      const { date, patient, doctor: doctorId, ...resValues } = values;
+      await updatePatient({ id: user._id, token: user.token }, resValues);
+      await createConsultation({ date, patient, doctor: doctorId });
+      dispatch(setUser({ ...user, ...resValues }));
+      toast("Consultation booked successfully!", "success");
+      router.push("/patient/consultations");
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message || "Failed to book consultation. Please try again.";
+      toast(msg, "error");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (isPending) return <div className="flex flex-row justify-center mt-10"><LoadingSpinner /></div>;
