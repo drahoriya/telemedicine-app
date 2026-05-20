@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import Spinner from "@/components/Spinner";
 
@@ -19,19 +19,9 @@ import AnimatedGridBackground from "@/components/home/AnimatedGridBackground";
 export default function HomePage() {
   const user = useSelector((state) => state.userReducer.user);
   const router = useRouter();
-  const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Firebase SPA serves index.html for ALL routes.
-    // If we're mounted at a non-root URL, navigate client-side to the
-    // correct route so Next.js renders the right component tree.
-    if (pathname !== "/" && pathname !== "") {
-      router.replace(pathname);
-      return;
-    }
-
-    // Normal root page: redirect logged-in users to their dashboard
     if (user?.token) {
       setIsLoading(true);
       if (user.role === "doctor") {
@@ -44,7 +34,7 @@ export default function HomePage() {
       }
     }
     setIsLoading(false);
-  }, [user, router, pathname]);
+  }, [user, router]);
 
   if (isLoading) {
     return <Spinner />;

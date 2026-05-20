@@ -6,7 +6,25 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "cleanUrls": true,
+    "trailingSlash": true,
     "rewrites": [
+      {
+        "source": "/patient/consultation/**",
+        "destination": "/patient/consultation/placeholder/index.html"
+      },
+      {
+        "source": "/patient/doctors/**",
+        "destination": "/patient/doctors/placeholder/index.html"
+      },
+      {
+        "source": "/doctor/consultations/**",
+        "destination": "/doctor/consultations/index.html"
+      },
+      {
+        "source": "/:consultationId([a-f0-9]{24})",
+        "destination": "/placeholder/index.html"
+      },
       {
         "source": "**",
         "destination": "/index.html"
