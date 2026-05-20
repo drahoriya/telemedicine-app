@@ -1,0 +1,22 @@
+{
+  "name": "telemedicine-website",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "prettier --check . && turbo lint --filter=backend && turbo lint --filter=frontend"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "husky": "9.1.7"
+  },
+  "devDependencies": {
+    "eslint": "8.0.0",
+    "prettier": "3.3.2",
+    "turbo": "latest",
+    "lint-staged": "latest"
+  },
+  "packageManager": "pnpm@8.15.0"
+}
