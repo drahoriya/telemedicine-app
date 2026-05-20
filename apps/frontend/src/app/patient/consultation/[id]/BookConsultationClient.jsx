@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,9 +60,19 @@ export default function BookConsultationPage() {
   const user = useSelector((state) => state.userReducer.user);
   const [activeStep, setActiveStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
-  const params = useParams();
   const router = useRouter();
   const toast = useToast();
+
+  // Read real ID from URL directly — useParams() returns "placeholder" when
+  // Firebase serves placeholder/index.html for a real dynamic URL
+  const realId = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const parts = window.location.pathname.replace(/\/$/, "").split("/");
+    const last = parts[parts.length - 1];
+    return last && last !== "placeholder" ? last : null;
+  }, []);
+
+  const params = { id: realId };
 
   const form = useForm({
     resolver: zodResolver(consultationSchema),

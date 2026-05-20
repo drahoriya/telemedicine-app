@@ -1,8 +1,8 @@
 "use client";
 
 // hooks
-import { useEffect, useState, useRef } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { useUserCheck } from "@/hooks";
 
@@ -29,7 +29,12 @@ import { ChevronRight } from "lucide-react";
 
 export default function ChatPage() {
   const user = useSelector((state) => state.userReducer.user);
-  const { consultationId } = useParams();
+  const consultationId = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const parts = window.location.pathname.replace(/\/$/, "").split("/");
+    const last = parts[parts.length - 1];
+    return last && last !== "placeholder" ? last : null;
+  }, []);
   const message = useRef();
   const userCheck = useUserCheck();
   const router = useRouter();

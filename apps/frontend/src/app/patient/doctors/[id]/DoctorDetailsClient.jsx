@@ -1,6 +1,7 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
 import { getDoctor } from "@/services/doctorService";
@@ -10,8 +11,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Phone, MapPin, Calendar, Award, GraduationCap, Clock, DollarSign } from "lucide-react";
 
 export default function DoctorDetailsPage() {
-  const params = useParams();
   const router = useRouter();
+  const realId = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const parts = window.location.pathname.replace(/\/$/, "").split("/");
+    const last = parts[parts.length - 1];
+    return last && last !== "placeholder" ? last : null;
+  }, []);
+  const params = { id: realId };
 
   const { data: doctor, isPending, isError, error } = useQuery({
     queryKey: ["doctor", params.id],
