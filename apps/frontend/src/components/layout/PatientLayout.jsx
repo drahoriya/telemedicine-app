@@ -12,7 +12,8 @@ import ConsultationAlert from "./ConsultationAlert";
 export function PatientLayout({ children }) {
   const user = useSelector((state) => state.userReducer.user);
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  // Skip loading spinner if user is already known from Redux (avoids spinner on every navigation)
+  const [loading, setLoading] = useState(!user);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {

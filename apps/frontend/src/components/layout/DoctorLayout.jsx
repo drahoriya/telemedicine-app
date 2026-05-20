@@ -12,7 +12,7 @@ import ConsultationAlert from "./ConsultationAlert";
 export function DoctorLayout({ children }) {
   const user = useSelector((state) => state.userReducer.user);
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!user);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
