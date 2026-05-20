@@ -1,3 +1,4 @@
+import { ClientOnly } from "@/components/ClientOnly";
 import BookConsultationClient from "./BookConsultationClient";
 
 export async function generateStaticParams() {
@@ -5,5 +6,9 @@ export async function generateStaticParams() {
 }
 
 export default function Page() {
-  return <BookConsultationClient />;
+  return (
+    <ClientOnly>
+      <BookConsultationClient />
+    </ClientOnly>
+  );
 }
